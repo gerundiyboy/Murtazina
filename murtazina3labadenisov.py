@@ -53,3 +53,39 @@ class Calculator:
                 if char == "-":
                     self.expression = "-"
                 return
+
+            # Если уже оператор — заменяем
+            if self.expression[-1] in operators:
+                self.expression = self.expression[:-1] + char
+            else:
+                self.expression += char
+
+        else:
+            self.expression += str(char)
+
+        self.update_entry()
+
+    def update_entry(self):
+        self.entry.delete(0, tk.END)
+        self.entry.insert(tk.END, self.expression)
+
+    def calculate(self):
+        try:
+            expr = self.expression.replace("atg", "math.atan")
+            result = self.safe_eval(expr)
+            self.expression = str(round(result, 6))
+        except ZeroDivisionError:
+            self.expression = "Ошибка: деление на 0"
+        except:
+            self.expression = "Ошибка"
+        self.update_entry()
+
+    def safe_eval(self, expr):
+        return eval(expr, {"__builtins__": None}, {"math": math})
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.geometry("350x400")
+    app = Calculator(root)
+    root.mainloop()
